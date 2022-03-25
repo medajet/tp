@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ID;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.util.Collections;
 import java.util.List;
 
 import seedu.address.commons.core.Messages;
@@ -12,7 +11,6 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.StudentId;
 import seedu.address.model.person.StudentIdContainsKeywordsPredicate;
 
 /**
@@ -29,24 +27,24 @@ public class DeleteCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1"
             + " or " + COMMAND_WORD + " " + PREFIX_ID + "A0123456Z\n";
 
-    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Student: %1$s";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "%s student(s) delete";
 
     private final Index targetIndex;
-    private final StudentId targetId;
+    private final StudentIdContainsKeywordsPredicate idPredicate;
 
     /**
      * Creates a DeleteCommand to delete the specified {@code Person} using the specified index.
      */
     public DeleteCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
-        this.targetId = null;
+        this.idPredicate = null;
     }
 
     /**
      * Creates a DeleteCommand to delete the specified {@code Person} using the specified student id.
      */
-    public DeleteCommand(StudentId targetId) {
-        this.targetId = targetId;
+    public DeleteCommand(StudentIdContainsKeywordsPredicate idPredicate) {
+        this.idPredicate = idPredicate;
         this.targetIndex = null;
     }
 
@@ -60,18 +58,22 @@ public class DeleteCommand extends Command {
             }
             Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
             model.deletePerson(personToDelete);
-            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, personToDelete));
+            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, 1));
         } else { // student id was used for the command
-            assert targetId != null;
-            StudentIdContainsKeywordsPredicate pred =
-                    new StudentIdContainsKeywordsPredicate(Collections.singletonList(targetId.toString()));
-            model.updateFilteredPersonList(pred);
-            if (model.getFilteredPersonList().size() > 0) { // person with specified id exists
-                Person personToDelete = lastShownList.get(Index.fromZeroBased(0).getZeroBased());
-                model.deletePerson(personToDelete);
+            assert idPredicate != null;
+            model.updateFilteredPersonList(idPredicate);
+            int numberOfDeletions = 0;
+            if (model.getFilteredPersonList().size() > 0) {
+                while (model.getFilteredPersonList().size() > 0) { // person with specified id exists
+                    model.updateFilteredPersonList(idPredicate);
+                    Person personToDelete = lastShownList.get(Index.fromZeroBased(0).getZeroBased());
+                    model.deletePerson(personToDelete);
+                    numberOfDeletions++;
+                }
                 model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-                return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, personToDelete));
-            } else {
+                return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, numberOfDeletions));
+            }
+             else {
                 throw new CommandException(Messages.MESSAGE_NONEXISTENT_STUDENTID);
             }
         }
@@ -87,10 +89,10 @@ public class DeleteCommand extends Command {
                 return false;
             }
             DeleteCommand commandToCompare = (DeleteCommand) other;
-            if (this.targetId == null && this.targetIndex != null) { // only targetIndex present
+            if (this.idPredicate == null && this.targetIndex != null) { // only targetIndex present
                 return targetIndex.equals(commandToCompare.targetIndex); // state check
-            } else if (this.targetIndex == null && this.targetId != null) { // only targetId present
-                return targetId.equals(commandToCompare.targetId); // state check
+            } else if (this.targetIndex == null && this.idPredicate != null) { // only idPredicate present
+                return idPredicate.equals(commandToCompare.idPredicate); // state check
             } else {
                 return false;
             }
