@@ -116,7 +116,22 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_validStudentId_success() {
+    public void execute_validStudentIdFilteredList_success() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new DeleteCommand(personToDelete.getStudentId());
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, personToDelete);
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_validStudentIdUnfilteredList_success() {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(personToDelete.getStudentId());
 
@@ -171,7 +186,7 @@ public class DeleteCommandTest {
         // different person -> returns false
         assertFalse(deleteFirstCommand.equals(deleteSecondCommand));
 
-        // different person -> returns false
+        // different command -> returns false
         assertFalse(deleteFirstCommand.equals(deleteMultipleCommand));
 
         // different person -> returns false
