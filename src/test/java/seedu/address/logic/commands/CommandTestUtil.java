@@ -22,6 +22,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -50,6 +51,9 @@ public class CommandTestUtil {
     public static final String VALID_TASK_AMY = "Task A";
     public static final String VALID_TASK_BOB = "Task B";
     public static final String VALID_INDEX = "1";
+    public static final String VALID_INDEX_TWO = "2";
+    public static final String VALID_INDEX_THREE = "3";
+    public static final String VALID_INDEX_MULTIPLE = "1 2 3";
     public static final String VALID_TASK_NAME = "Valid Task";
 
     public static final String ID_DESC_AMY = " " + PREFIX_ID + VALID_ID_AMY;
