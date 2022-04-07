@@ -665,6 +665,30 @@ After which, a new `ProgressCommand` object will be created, and is subsequently
 
 ![ProgressCommandSequenceDiagram-2](images/ProgressCommandSequenceDiagram-2.png)
 
+### Sort Command
+
+#### Description
+
+The `sort` command allows the users to view the list of students in TAPA, sorted by the number of incomplete tasks in **descending** order.
+During the execution of the `sort` command, the user's input is being parsed in `AddressBookParser`.
+After which, a new `SortCommand` object will be created, and is subsequently executed by the `LogicManager`.
+
+#### Implementation
+
+1. Upon receiving the user input,
+   the `LogicManager` starts to parse the given input text using `AddressBookParser#parseCommand()`.
+2. The `AddressBookParser` invokes the respective `Parser` based on the first word of the input text.
+3. Since the first word in the user input matches the word "sort", `SortCommand()` will be called.
+4. As `SortCommand` utilizes the default constructor, it simply returns a new `SortCommand` object to
+   the `AddressBookParser`.
+5. This `SortCommand` object will then be subsequently returned to the `LogicManager`.
+6. The `LogicManager` calls `SortCommand#execute(Model model)`.
+7. In `SortCommand`, the current list of students in TAPA will be sorted by the number of incomplete tasks in **descending** order by calling `model#sortFilteredPersonListByTaskLeft()`.
+8. In `SortCommand`, the current list of students in TAPA will be updated to reflect the changes to the list, after the sort by calling `model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)`.
+9. Lastly, the `SortCommand` will create a new `CommandResult`, which will then be returned to `LogicManager`.
+
+![SortCommandSequenceDiagram](images/SortCommandSequenceDiagram.png)
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

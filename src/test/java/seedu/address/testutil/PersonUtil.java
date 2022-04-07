@@ -57,7 +57,6 @@ public class PersonUtil {
         descriptor.getTelegramHandle().ifPresent(
             telegramHandle -> sb.append(PREFIX_TELEGRAM_HANDLE).append(telegramHandle.telegramHandle).append(" "));
         descriptor.getEmail().ifPresent(email -> sb.append(PREFIX_EMAIL).append(email.value).append(" "));
-        // TODO: TaskList should be included if we implement the edit task function
 
         return sb.toString();
     }

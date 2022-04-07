@@ -1,6 +1,7 @@
 package seedu.address;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -35,6 +36,26 @@ public class AppParametersTest {
         parametersStub.namedParameters.put("config", "a\0");
         expected.setConfigPath(null);
         assertEquals(expected, AppParameters.parse(parametersStub));
+    }
+
+    @Test
+    public void equals_sameObject_success() {
+        AppParameters ap = AppParameters.parse(parametersStub);
+        assertEquals(ap, ap);
+    }
+
+    @Test
+    public void equals_differentClass_success() {
+        AppParameters ap = AppParameters.parse(parametersStub);
+        assertFalse(ap.equals("x"));
+    }
+
+    @Test
+    public void hashCode_success() {
+        parametersStub.namedParameters.put("config", "config.json");
+        expected.setConfigPath(Paths.get("config.json"));
+        AppParameters ap = AppParameters.parse(parametersStub);
+        assertEquals(ap.hashCode(), ap.getConfigPath().hashCode());
     }
 
     private static class ParametersStub extends Application.Parameters {

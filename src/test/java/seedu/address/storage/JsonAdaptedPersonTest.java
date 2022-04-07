@@ -9,8 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.ModuleCode;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.StudentId;
+import seedu.address.model.person.TelegramHandle;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_ID = "A@@@@@@@Z";
@@ -27,13 +30,28 @@ public class JsonAdaptedPersonTest {
     private static final String VALID_TELEGRAM_HANDLE = BENSON.getTelegramHandle().toString();
     private static final String VALID_EMAIL = BENSON.getEmail().toString();
 
-    //TODO: Add tests for studentID, moduleCode and telegramHandle (and potentially taskList)
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
         JsonAdaptedPerson person = new JsonAdaptedPerson(BENSON);
         assertEquals(BENSON, person.toModelType());
     }
 
+    @Test
+    public void toModelType_invalidStudentId_throwsIllegalValueException() {
+        JsonAdaptedPerson person =
+                new JsonAdaptedPerson(INVALID_ID, VALID_NAME, VALID_MODULE_CODE,
+                        VALID_PHONE, VALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
+        String expectedMessage = StudentId.MESSAGE_CONSTRAINTS;
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullStudentId_throwsIllegalValueException() {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(null, VALID_NAME, VALID_MODULE_CODE,
+                VALID_PHONE, VALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
+        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, StudentId.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
 
     @Test
     public void toModelType_invalidName_throwsIllegalValueException() {
@@ -53,11 +71,37 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
+    public void toModelType_invalidModuleCode_throwsIllegalValueException() {
+        JsonAdaptedPerson person =
+                new JsonAdaptedPerson(VALID_ID, VALID_NAME, INVALID_MODULE_CODE,
+                        VALID_PHONE, VALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
+        String expectedMessage = ModuleCode.MESSAGE_CONSTRAINTS;
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullModuleCode_throwsIllegalValueException() {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_ID, VALID_NAME, null,
+                VALID_PHONE, VALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
+        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, ModuleCode.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
     public void toModelType_invalidPhone_throwsIllegalValueException() {
         JsonAdaptedPerson person =
                 new JsonAdaptedPerson(VALID_ID, VALID_NAME, VALID_MODULE_CODE,
                         INVALID_PHONE, VALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
         String expectedMessage = Phone.MESSAGE_CONSTRAINTS;
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_invalidTelegramHandle_throwsIllegalValueException() {
+        JsonAdaptedPerson person =
+                new JsonAdaptedPerson(VALID_ID, VALID_NAME, VALID_MODULE_CODE,
+                        VALID_PHONE, INVALID_TELEGRAM_HANDLE, VALID_EMAIL, null);
+        String expectedMessage = TelegramHandle.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 

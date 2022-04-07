@@ -9,6 +9,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TELEGRAM_HANDLE_BOB;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,15 @@ public class PersonTest {
         Person aliceCopy = new PersonBuilder(ALICE).build();
         assertTrue(ALICE.equals(aliceCopy));
 
+        // copy of object (unmarked tasks) -> returns true
+        Person newAliceCopy = aliceCopy.getCopy();
+        assertTrue(aliceCopy.equals(newAliceCopy));
+
+        // copy of object (marked tasks) -> returns true
+        Person bensonCopy = new PersonBuilder(BENSON).build();
+        Person newBensonCopy = bensonCopy.getCopy();
+        assertTrue(bensonCopy.equals(newBensonCopy));
+
         // same object -> returns true
         assertTrue(ALICE.equals(ALICE));
 
@@ -83,5 +93,25 @@ public class PersonTest {
         editedAlice = new PersonBuilder(ALICE).withEmail(VALID_EMAIL_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
 
+        // null checks for phone
+        editedAlice = new PersonBuilder(ALICE).withPhone((String) null).build();
+        Person editedAliceCopy = editedAlice.getCopy();
+        assertFalse(ALICE.equals(editedAlice));
+        assertFalse(editedAlice.equals(ALICE));
+        assertTrue(editedAlice.equals(editedAliceCopy));
+
+        // null checks for telegram handle
+        editedAlice = new PersonBuilder(ALICE).withTelegramHandle((String) null).build();
+        editedAliceCopy = editedAlice.getCopy();
+        assertFalse(ALICE.equals(editedAlice));
+        assertFalse(editedAlice.equals(ALICE));
+        assertTrue(editedAlice.equals(editedAliceCopy));
+
+        // null checks for email
+        editedAlice = new PersonBuilder(ALICE).withEmail((String) null).build();
+        editedAliceCopy = editedAlice.getCopy();
+        assertFalse(ALICE.equals(editedAlice));
+        assertFalse(editedAlice.equals(ALICE));
+        assertTrue(editedAlice.equals(editedAliceCopy));
     }
 }

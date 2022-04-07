@@ -90,4 +90,11 @@ public class ManualCommand extends Command {
             throw new CommandException(ManualMessages.MANUAL_MESSAGE_UNKNOWN_COMMANDS);
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof ManualCommand // instanceof handles nulls
+                && commandName.equals(((ManualCommand) other).commandName)); // state check
+    }
 }

@@ -1,0 +1,55 @@
+@startuml
+!include style.puml
+
+title SortCommand\n
+
+box "Logic" LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant "command:SortCommand" as SortCommand LOGIC_COLOR
+participant "commandResult:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box "Model" MODEL_COLOR_T1
+participant "model:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute
+activate LogicManager LOGIC_COLOR
+
+LogicManager -> AddressBookParser : parseCommand(commandText)
+activate AddressBookParser LOGIC_COLOR
+
+create SortCommand
+AddressBookParser -> SortCommand : parse(arguments)
+activate SortCommand LOGIC_COLOR
+SortCommand --> AddressBookParser
+deactivate SortCommand
+
+AddressBookParser --> LogicManager --
+deactivate AddressBookParser
+
+LogicManager -> SortCommand: execute(model)
+activate SortCommand LOGIC_COLOR
+
+SortCommand -> Model ++ MODEL_COLOR: sortFilteredPersonListByTaskLeft()
+Model --> SortCommand --
+deactivate Model
+
+SortCommand -> Model ++ MODEL_COLOR: updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
+Model --> SortCommand --
+deactivate Model
+
+create CommandResult
+SortCommand -> CommandResult ++ LOGIC_COLOR:
+
+CommandResult --> SortCommand --:
+deactivate CommandResult
+
+SortCommand --> LogicManager --: commandResult
+deactivate SortCommand
+
+[<--LogicManager --: commandResult
+deactivate LogicManager
+
+@enduml
