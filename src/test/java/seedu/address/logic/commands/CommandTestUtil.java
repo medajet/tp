@@ -50,6 +50,9 @@ public class CommandTestUtil {
     public static final String VALID_TASK_AMY = "Task A";
     public static final String VALID_TASK_BOB = "Task B";
     public static final String VALID_INDEX = "1";
+    public static final String VALID_INDEX_TWO = "2";
+    public static final String VALID_INDEX_THREE = "3";
+    public static final String VALID_INDEX_MULTIPLE = "1 2 3";
     public static final String VALID_TASK_NAME = "Valid Task";
 
     public static final String ID_DESC_AMY = " " + PREFIX_ID + VALID_ID_AMY;
@@ -103,7 +106,7 @@ public class CommandTestUtil {
      * - the {@code actualModel} matches {@code expectedModel}
      */
     public static void assertCommandSuccess(Command command, Model actualModel, CommandResult expectedCommandResult,
-            Model expectedModel) {
+                                            Model expectedModel) {
         try {
             CommandResult result = command.execute(actualModel);
             assertEquals(expectedCommandResult, result);
@@ -118,7 +121,7 @@ public class CommandTestUtil {
      * that takes a string {@code expectedMessage}.
      */
     public static void assertCommandSuccess(Command command, Model actualModel, String expectedMessage,
-            Model expectedModel) {
+                                            Model expectedModel) {
         CommandResult expectedCommandResult = new CommandResult(expectedMessage);
         assertCommandSuccess(command, actualModel, expectedCommandResult, expectedModel);
     }
